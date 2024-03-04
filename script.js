@@ -1,3 +1,28 @@
+const player1 = createPlayer("Player1");
+const player2 = createPlayer("Player2");
+
+function createPlayer(name) {
+    let totalScore = 0;
+
+    function getName(){
+        return name;
+    }
+
+    function setName(newName){
+        name = newName;
+    }
+
+    function getScore(){
+        return totalScore;
+    }
+
+    function addScore(){
+        totalScore++;
+    }
+
+    return { getName, setName, getScore, addScore }
+}
+
 const TicTacToe = (function () {
     let turn = 0;   // used to determine which turn is it: even - player1, odd - player2
     let winner = 0; // used to determine winner: 1 - player1, 2 - player2
@@ -38,17 +63,22 @@ const TicTacToe = (function () {
         return { resetBoard, displayBoard, setCell, getCell };
     })();
 
+    const displayBoard = GameBoard.displayBoard;    // copie display func for return
+
     function getTurn() {
         return turn;
     }
 
     function makeMove(row, column) {
+        if (winner)
+            return;
+
         let currentPlayerSign = turn % 2 ? "O" : "X";
         if (GameBoard.setCell(row, column, currentPlayerSign)) {
             checkForWinner(row, column, currentPlayerSign);
             turn++;
         }
-        endOfGame();
+        endOfGame(player1.getName(), player2.getName());
     }
 
     function checkForWinner(rowIndex, columnIndex, curPlayerSign) {
@@ -60,9 +90,9 @@ const TicTacToe = (function () {
             winner = turn % 2 ? 2 : 1;
     }
 
-    function endOfGame() {
+    function endOfGame(player1Name, player2Name) {
         if (winner) {
-            let whoWon = winner === 1 ? "Player1" : "Player2";
+            let whoWon = winner === 1 ? player1Name : player2Name;
             console.log(`${whoWon} won this round!`)
         }
         else if (turn > 8)
@@ -101,6 +131,6 @@ const TicTacToe = (function () {
         return true;
     };
 
-    // change return later, for a while allow access to GameBoard
-    return { getTurn, makeMove, GameBoard };
+    // maybe remove displayBoard from TicTacToe later
+    return { getTurn, makeMove, displayBoard };
 })();
