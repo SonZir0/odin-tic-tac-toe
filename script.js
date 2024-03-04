@@ -70,7 +70,7 @@ const TicTacToe = (function () {
     }
 
     function makeMove(row, column) {
-        if (winner)
+        if (winner || turn > 8)
             return;
 
         let currentPlayerSign = turn % 2 ? "O" : "X";
@@ -97,6 +97,12 @@ const TicTacToe = (function () {
         }
         else if (turn > 8)
             console.log("It's a tie!");
+    }
+
+    function startNewGame(){
+        turn = 0;
+        winner = 0;
+        GameBoard.resetBoard();
     }
 
     function checkInRow(rowIndex, playerSign) {
@@ -132,5 +138,5 @@ const TicTacToe = (function () {
     };
 
     // maybe remove displayBoard from TicTacToe later
-    return { getTurn, makeMove, displayBoard };
+    return { getTurn, makeMove, displayBoard, startNewGame };
 })();
