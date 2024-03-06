@@ -1,32 +1,9 @@
-const player1 = createPlayer("Player1");
-const player2 = createPlayer("Player2");
-
-function createPlayer(name) {
-    let totalScore = 0;
-
-    function getName(){
-        return name;
-    }
-
-    function setName(newName){
-        name = newName;
-    }
-
-    function getScore(){
-        return totalScore;
-    }
-
-    function addScore(){
-        totalScore++;
-    }
-
-    return { getName, setName, getScore, addScore }
-}
+const players = [createPlayer("Player1"), createPlayer("Player2")];
 
 const TicTacToe = (function () {
     let turn = 0;   // used to determine which turn is it: even - player1, odd - player2
     let winner = 0; // used to determine winner: 1 - player1, 2 - player2
-    
+
     const GameBoard = (function () {
         let board;
 
@@ -63,10 +40,15 @@ const TicTacToe = (function () {
         return { resetBoard, displayBoard, setCell, getCell };
     })();
 
-    const displayBoard = GameBoard.displayBoard;    // copie display func for return
+    const displayBoard = GameBoard.displayBoard;    // copie functions for return
+    const getCell = GameBoard.getCell;
 
     function getTurn() {
         return turn;
+    }
+
+    function getWinner() {
+        return winner;
     }
 
     function makeMove(row, column) {
@@ -78,7 +60,7 @@ const TicTacToe = (function () {
             checkForWinner(row, column, currentPlayerSign);
             turn++;
         }
-        endOfGame(player1.getName(), player2.getName());
+        endOfGame();
     }
 
     function checkForWinner(rowIndex, columnIndex, curPlayerSign) {
@@ -90,16 +72,16 @@ const TicTacToe = (function () {
             winner = turn % 2 ? 2 : 1;
     }
 
-    function endOfGame(player1Name, player2Name) {
+    function endOfGame() {
         if (winner) {
-            let whoWon = winner === 1 ? player1Name : player2Name;
+            let whoWon = winner === 1 ? players[0].getName() : players[1].getName();
             console.log(`${whoWon} won this round!`)
         }
         else if (turn > 8)
             console.log("It's a tie!");
     }
 
-    function startNewGame(){
+    function startNewGame() {
         turn = 0;
         winner = 0;
         GameBoard.resetBoard();
@@ -136,7 +118,72 @@ const TicTacToe = (function () {
         }
         return true;
     };
-
     // maybe remove displayBoard from TicTacToe later
-    return { getTurn, makeMove, displayBoard, startNewGame };
+    return { getTurn, getWinner, getCell, makeMove, displayBoard, startNewGame };
 })();
+
+const displayController = (function () {
+    const gameLog = document.querySelector("main>p");
+    const playerScores = Array.from(document.querySelectorAll(".playerPanel .scoreValue"));
+    const gameboardFields = document.querySelectorAll(".board>div");
+    const resetBtn = document.querySelector("main>button");
+
+    Array.from(gameboardFields).forEach(field => {
+        field.addEventListener("click", chooseTile
+        );
+        field.addEventListener("keydown", (event) => {
+            if (event.keyCode === 13)
+                chooseTile
+                    (event);
+        });
+    });
+
+    function chooseTile(event) {
+        let currentWinner = TicTacToe.getWinner();
+        // if no winner then make move
+        if (!currentWinner) {
+            if (TicTacToe.getCell(event.target.dataset.row, event.target.dataset.column) === "-") {
+                event.target.textContent = TicTacToe.getTurn() % 2 ? "O" : "X";
+                TicTacToe.makeMove(event.target.dataset.row, event.target.dataset.column);
+            }
+            updateDisplay();
+        } else gameLog.textContent = "This round is already over, how about another one?";
+    }
+
+    function updateDisplay() {
+        // if we have a winner after this move
+        currentWinner = TicTacToe.getWinner();
+        if (currentWinner) {
+            gameLog.textContent = `${players[currentWinner - 1].getName()} won this round!`;
+            playerScores[currentWinner-1].textContent = +playerScores[currentWinner-1].textContent + 1;
+            players[currentWinner - 1].addScore();
+
+        } else {
+            let whosNext = TicTacToe.getTurn() % 2 ? players[1].getName() : players[0].getName();
+            gameLog.textContent = `${whosNext} it's your turn!`
+        }
+    }
+    return playerScores;
+})();
+
+function createPlayer(name) {
+    let totalScore = 0;
+
+    function getName() {
+        return name;
+    }
+
+    function setName(newName) {
+        name = newName;
+    }
+
+    function getScore() {
+        return totalScore;
+    }
+
+    function addScore() {
+        totalScore++;
+    }
+
+    return { getName, setName, getScore, addScore }
+}
