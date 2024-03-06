@@ -138,7 +138,7 @@ const displayController = (function () {
     });
 
     resetBtn.addEventListener("click", () => {
-        if (resetBtn.textContent === "Are you sure?") {
+        if (TicTacToe.getWinner() || resetBtn.textContent === "Are you sure?") {
             TicTacToe.startNewGame();
             gameLog.textContent = `${players[0].getName()} it's your turn!`;
             gameboardFields.forEach(field => {
