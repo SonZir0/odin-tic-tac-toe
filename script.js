@@ -125,18 +125,32 @@ const TicTacToe = (function () {
 const displayController = (function () {
     const gameLog = document.querySelector("main>p");
     const playerScores = Array.from(document.querySelectorAll(".playerPanel .scoreValue"));
-    const gameboardFields = document.querySelectorAll(".board>div");
+    const gameboardFields = Array.from(document.querySelectorAll(".board>div"));
     const resetBtn = document.querySelector("main>button");
 
-    Array.from(gameboardFields).forEach(field => {
+    gameboardFields.forEach(field => {
         field.addEventListener("click", chooseTile
         );
         field.addEventListener("keydown", (event) => {
             if (event.keyCode === 13)
-                chooseTile
-                    (event);
+                chooseTile(event);
         });
     });
+
+    resetBtn.addEventListener("click", () => {
+        if (resetBtn.textContent === "Are you sure?") {
+            TicTacToe.startNewGame();
+            gameLog.textContent = `${players[0].getName()} it's your turn!`;
+            gameboardFields.forEach(field => {
+                field.textContent = "";
+            });
+        } else {
+            resetBtn.textContent = "Are you sure?";
+            resetBtn.addEventListener("mouseout", cancelRestart);
+            resetBtn.addEventListener("focusout", cancelRestart);
+        }
+    });
+
 
     function chooseTile(event) {
         let currentWinner = TicTacToe.getWinner();
@@ -155,7 +169,7 @@ const displayController = (function () {
         currentWinner = TicTacToe.getWinner();
         if (currentWinner) {
             gameLog.textContent = `${players[currentWinner - 1].getName()} won this round!`;
-            playerScores[currentWinner-1].textContent = +playerScores[currentWinner-1].textContent + 1;
+            playerScores[currentWinner - 1].textContent = +playerScores[currentWinner - 1].textContent + 1;
             players[currentWinner - 1].addScore();
 
         } else {
@@ -163,7 +177,12 @@ const displayController = (function () {
             gameLog.textContent = `${whosNext} it's your turn!`
         }
     }
-    return playerScores;
+
+    function cancelRestart(event) {
+        resetBtn.textContent = "Restart";
+        resetBtn.removeEventListener("mouseout", cancelRestart);
+        resetBtn.removeEventListener("focusout", cancelRestart);
+    };
 })();
 
 function createPlayer(name) {
