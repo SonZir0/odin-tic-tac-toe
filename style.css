@@ -6,10 +6,12 @@
 
 :root {
     --minimumSide: min(100svh, 100svw);
-    --smallGap: calc(var(--minimumSide)/100)
+    --smallGap: calc(var(--minimumSide)/100);
+    --main-color: #AAD9EC;
 }
 
 body {
+    background-color: #c0e1f0;
     height: 100svh;
     font-size: 2rem;
     text-align: center;
@@ -19,13 +21,16 @@ body {
     h1 {
         margin: 0px;
         padding: 1rem 0px;
+        background-color: var(--main-color);
+        box-shadow: 2px 3px 3px 0px #c8d2eb;
     }
 
     dialog {
-        margin-top: 10%;
+        margin-top: 25svh;
         border-radius: 20px;
         padding-bottom: 0px;
         width: min(400px, 70svw);
+        background-color: #DDF1FA;
 
         p {
             margin: 0px;
@@ -63,6 +68,7 @@ button {
     padding: 0.25rem 3rem;
     border-radius: 30px;
     align-self: center;
+    background-color: var(--main-color);
 }
 
 .middle {
@@ -78,7 +84,7 @@ button {
     }
 
     .board {
-        background-color: pink;
+        background-color: #7FB3C8;
         display: grid;
         grid-template-columns: repeat(3, minmax(50px, calc(var(--minimumSide)/5)));
         padding: var(--smallGap);
@@ -86,7 +92,7 @@ button {
         justify-content: center;
 
         div {
-            background-color: aqua;
+            background-color: var(--main-color);
             align-content: center;
             font-size: 5rem;
             aspect-ratio: 1/1;
@@ -98,7 +104,7 @@ footer {
     flex: none;
     margin-top: auto;
     padding: 0.6rem;
-    background-color: #a8adc7;
+    background-color: #a7bdd9;
 }
 
 @media (max-width: 1350px) {
