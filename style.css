@@ -20,7 +20,32 @@ body {
         margin: 0px;
         padding: 1rem 0px;
     }
+
+    dialog {
+        margin-top: 10%;
+        border-radius: 20px;
+        padding-bottom: 0px;
+        width: min(400px, 70svw);
+
+        p {
+            margin: 0px;
+        }
+
+        div {
+            margin-top: 1rem;
+
+            label {
+                text-align: start;
+            }
+        }
+
+        div {
+            display: flex;
+            flex-direction: column;
+        }
+    }
 }
+
 
 main {
     margin: 0px 20%;
@@ -31,13 +56,13 @@ main {
         margin: 1rem;
         font-size: 2rem;
     }
+}
 
-    button {
-        margin: 1.25rem 0px;
-        padding: 0.25rem 3rem;
-        border-radius: 30px;
-        align-self: center;
-    }
+button {
+    margin: 1.25rem 0px;
+    padding: 0.25rem 3rem;
+    border-radius: 30px;
+    align-self: center;
 }
 
 .middle {
@@ -82,7 +107,7 @@ footer {
     }
 }
 
-@media (max-width: 800px) or ((max-width: 1050px) and (max-aspect-ratio: 3/2 )) {
+@media (max-width: 800px) or ((max-width: 1050px) and (max-aspect-ratio: 3/2)) {
 
     .middle {
         display: grid;

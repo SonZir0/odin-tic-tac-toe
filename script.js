@@ -123,10 +123,13 @@ const TicTacToe = (function () {
 })();
 
 const displayController = (function () {
+    const dialog = document.querySelector("dialog");
     const gameLog = document.querySelector("main>p");
     const playerScores = Array.from(document.querySelectorAll(".playerPanel .scoreValue"));
     const gameboardFields = Array.from(document.querySelectorAll(".board>div"));
     const resetBtn = document.querySelector("main>button");
+
+    chooseNames();
 
     gameboardFields.forEach(field => {
         field.addEventListener("click", chooseTile
@@ -138,6 +141,9 @@ const displayController = (function () {
     });
 
     resetBtn.addEventListener("click", () => {
+        if (!TicTacToe.getTurn())   //do nothing at 1 turn
+            return;
+
         if (TicTacToe.getWinner() || resetBtn.textContent === "Are you sure?") {
             TicTacToe.startNewGame();
             gameLog.textContent = `${players[0].getName()} it's your turn!`;
@@ -151,6 +157,40 @@ const displayController = (function () {
         }
     });
 
+    function cancelRestart(event) {
+        resetBtn.textContent = "Restart";
+        resetBtn.removeEventListener("mouseout", cancelRestart);
+        resetBtn.removeEventListener("focusout", cancelRestart);
+    };
+
+    function chooseNames() {
+        const main = document.querySelector("main");
+        const startBtn = document.querySelector("dialog button");
+        const inputArr = Array.from(document.querySelectorAll("dialog input"));
+        const playerNameTags = Array.from(document.querySelectorAll(".playerPanel .name"))
+
+        main.style.visibility = "hidden";
+        dialog.show();
+
+        startBtn.addEventListener("click", function showMain() {
+            let allValid = true;
+            inputArr.forEach((input) => {
+                allValid &&= input.validity.valid;
+            });
+
+            if (allValid) {
+                for (let i = 0; i < 2; i++) {
+                    players[i].setName(inputArr[i].value);
+                    playerNameTags[i].textContent = inputArr[i].value;
+                }
+
+
+                gameLog.textContent = `${players[0].getName()} it's your turn!`;
+                main.style.visibility = "visible";
+                startBtn.removeEventListener("click", showMain);
+            }
+        });
+    };
 
     function chooseTile(event) {
         let currentWinner = TicTacToe.getWinner();
@@ -177,12 +217,6 @@ const displayController = (function () {
             gameLog.textContent = `${whosNext} it's your turn!`
         }
     }
-
-    function cancelRestart(event) {
-        resetBtn.textContent = "Restart";
-        resetBtn.removeEventListener("mouseout", cancelRestart);
-        resetBtn.removeEventListener("focusout", cancelRestart);
-    };
 })();
 
 function createPlayer(name) {
